@@ -1,0 +1,65 @@
+python框架
+
+    `def bfs（start，target）:
+      queue = collections.deque() #队列 先进先出 popleft()
+      visited = set() 
+      queue.append(start)
+      visited.add(start)
+      step = 0
+      while queue:
+        size = len(queue)
+        for i in range(size):
+          cur = queue.popleft()
+            if cur == target:
+              return step
+          for node in cur:
+            if node not in visited:
+              queue.append(node)
+              visited.add(node)
+      step += 1
+      return step
+    `
+BFS 二叉树例题 LC111
+**题目要求**
+给定一个二叉树，找出其最小深度。
+
+最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+
+说明：叶子节点是指没有子节点的节点。
+**思路解析**
+**找最小深度** 
+就是从根节点遍历 **找到最小深度的叶子节点**（此时叶子节点 定义为cur not cur.left and not cur.right）即找到`目标节点` 返回深度即可
+**注意的点**
+可能出现[]的情况 注意返回 if not root: return 0
+
+**代码**
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+      queue = collections.deque()
+      #visited = set()   #此时不需要记录表记录遍历的位置
+      if not root : return 0
+      if not root.left and not root.right:return 1
+      queue.append(root)
+      depth = 1
+      while queue:
+        size = len(queue)
+        for i in range(size):
+          cur = queue.popleft()
+          if not cur.left and not cur.right:
+            return depth
+           if cur.left:
+             queue.append(cur.left)
+           if cur.right:
+             queue.append(cur.right)
+           depth += 1
+    return depth
+
+```

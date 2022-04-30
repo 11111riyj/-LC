@@ -41,3 +41,60 @@
 ![6bb61116e6ff774cb97b3bd02677a36](https://user-images.githubusercontent.com/51037569/161278919-1bd633ff-1ee0-447e-92af-74ca0cfe6f12.png)
 
 
+# 关于动态规划的两种形式
+# dp数组
+**当思路卡壳时可以换一个思路**
+如LC https://leetcode-cn.com/problems/minimum-path-sum/#:~:text=%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95-,64.%20%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C,-%E9%9A%BE%E5%BA%A6
+题目要求：给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+
+说明：每次只能向下或者向右移动一步。
+
+ **最直接的思路** #自下而上
+从[0,0]位置开始走，计算[0,1],[1,0]到右下角的距离谁比较短，最后在+grid[0,0]即可。
+代码如下
+ `class Solution:
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m,n = len(grid),len(grid[0])
+        memo = [[-1]*n for _ in range(m)]
+        def dp(grid,i,j):
+            #base case memo[0][0] = grid[0][0] 已经下下列代码中体现
+            if i == m or j == n:
+                return float('INF')
+            if i == m-1 and j == n - 1:
+                return grid[i][j]
+            if memo[i][j] != -1:
+                return memo[i][j]
+            res = min(dp(grid,i,j+1),dp(grid,i+1,j))+grid[i][j]
+            memo[i][j] = res
+            return memo[i][j]
+        return dp(grid,0,0)  `
+# 换一种思路 自上而下
+**思路**
+从右下角开始往回走 也比较简单 大致就是递归从右下角找最近距离
+1、base case if i == 0 and j == 0:return grid[0][0]
+2、动态方程 dp[i][j] = min(dp[i][j-1],dp[i-1][j])+grid[i][j]
+代码如下：
+`
+class Solution:
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m,n = len(grid),len(grid[0])
+        memo = [[-1]*n for _ in range(m)]
+        def dp(grid,i,j):
+            if i < 0 or j < 0:
+                return float('INF')
+            if i == 0 and j == 0:
+                return grid[0][0]
+            if memo[i][j] != -1:
+                return memo[i][j]
+            memo[i][j] = min(dp(grid,i,j-1),dp(grid,i-1,j))+grid[i][j] #动态方程
+            return memo[i][j]
+        return dp(grid,m-1,n-1)
+            `
+            
+## Q 为什么dp数组要设置m行n列
+**reason**
+因为会溢出边界 比如在自底向上会方位到dp[m,n] 此时为溢出边界 所以设置 dp[m,x] or dp[x,n] or dp[m,n] = float('INF')
+自上向下的会出现 dp[-1,-1]的情况 与上述情况类似
+
+
+

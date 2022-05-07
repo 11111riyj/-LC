@@ -1,6 +1,7 @@
 python框架
 
-    `def bfs（start，target）:
+    ```
+    def bfs（start，target）:
       queue = collections.deque() #队列 先进先出 popleft()
       visited = set() 
       queue.append(start)
@@ -18,7 +19,7 @@ python框架
               visited.add(node)
       step += 1
       return step
-    `
+    ```
 BFS 二叉树例题 LC111
 **题目要求**
 给定一个二叉树，找出其最小深度。

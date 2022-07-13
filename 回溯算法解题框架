@@ -74,8 +74,47 @@
       
       
 ## LC 698 划分为k个相等的子集
-    
-   
+题目：“输入： nums = [4, 3, 2, 3, 5, 2, 1], k = 4
+输出： True
+说明： 有可能将其分成 4 个子集（5），（1,4），（2,3），（2,3）等于总和。”
+
+
+思路：
+  两种思路
+  1、从数字的角度，该数字是否放进某个bucket中
+  2、从桶的角度，该桶是否要某个数字
+
+  从桶的角度
+  1、为每个数字设定used表
+  2、为每个bucket设定target 达到target后，进行下一个bucket的计算，每次计算，nums初始index为0
+  3、当每个bt都为True时，初始bt才能为True
+代码：
+import collections
+class Solution:
+    def canPartitionKSubsets(self, nums: List[int], k: int) -> bool:
+        n = len(nums)
+        if k>n:return False
+        sum = 0
+        for i in range(n):sum+=nums[i]
+        target = sum/k 
+        if sum%k != 0:return False
+        used = [False for i in range(n)]
+        def bt(k,bucket,nums,start,used,target):
+            if k == 0:
+                return True
+            if bucket == target:
+                return bt(k-1,0,nums,0,used,target)
+            for i in range(n):
+                if used[i] or nums[i] + bucket >target:
+                    continue
+                used[i] = True
+                bucket += nums[i]
+                if bt(k,bucket,nums,i+1,used,target):
+                    return True
+                used[i] = False
+                bucket -= nums[i]
+            return False
+        return bt(k,0,nums,0,used,target)
     
   
  

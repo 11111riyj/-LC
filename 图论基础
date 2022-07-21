@@ -67,6 +67,11 @@ class Solution:
 解释：不能将节点分割成两个独立的子集，以使每条边都连通一个子集中的一个节点与另一个子集中的一个节点。
 
 
+**思路**
+图的思想就是小列表+列表索引 列表索引表示某个图的位置 列表索引所在位置的小列表则是表示某个图与之相关联的图
+所以 关键在于如何把小列表和列表索引分开
+不管是BFS还是DFS 都将列表索引和小列表分开
+
 DFS代码：
 
 class Solution:
@@ -75,11 +80,11 @@ class Solution:
         self.ans = True
         color = [False for i in range(n)] #上色列表
         visited = [False for i in range(n)] #访问情况
-        def bt(graph,v): #DFS 框架 每层遍历
+        def bt(graph,v): #DFS 框架 每层遍历 v为列表索引
             if self.ans == False:
                 return  
             visited[v] = True
-            for i in graph[v]:
+            for i in graph[v]: #小列表遍历
                 if visited[i] == False: #如果未遍历 该点颜色未改变
                     color[i] = ~color[v] #赋予与该出发节点颜色不同的颜色
                     bt(graph,i) 递归
@@ -89,6 +94,32 @@ class Solution:
         for i in range(n):
             if visited[i] == False:
                 bt(graph,i)
+        return self.ans
+BFS代码：
+import collections
+class Solution:
+    def isBipartite(self, graph: List[List[int]]) -> bool:
+        n = len(graph)
+        self.ans = True
+        visited = [False for i in range(n)]
+        color = [False for i in range(n)]
+        def bfs(graph,start): #start 列表索引
+            queue = collections.deque()
+            queue.append(start)
+            visited[start] = True
+            while len(queue) != 0 and self.ans:
+                cur = queue.popleft()
+                for i in graph[cur]: #小列表遍历
+                    if visited[i]==False:
+                        color[i] = ~color[cur]
+                        visited[i] = True
+                        queue.append(i) #增加队列
+                    else:
+                        if color[i] == color[cur]:
+                            self.ans = False
+        for i in range(n):
+            if ~visited[i]:
+                bfs(graph,i)
         return self.ans
 
  
